@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+      PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+   
+<mapper namespace="mapper.member">
+
+   <resultMap id="memResult" type="com.edu.member.vo.MemberVO">
+      <result property="id" column="id"/>
+      <result property="pwd" column="pwd"/>
+      <result property="name" column="name"/>
+      <result property="email" column="email"/>
+      <result property="joinDate" column="joinDate"/>
+   </resultMap>
+   
+   <!-- 회원 가입 처리 -->
+   <insert id="addMember" parameterType="com.edu.member.vo.MemberVO">
+   <![CDATA[
+      INSERT INTO t_member (id, pwd, name, email, joindate)
+      VALUES (#{id}, #{pwd}, #{name}, #{email}, sysdate)
+   ]]> <!-- <![CDATA[]]>특수 코드 들어 간 것도 문자로 인식해 준다. -->
+   </insert>
+   
+   
+   <!--  회원 전체 목록 -->
+   <select id="selectAllMemberList" resultMap="memResult">
+      <![CDATA[
+      SELECT * FROM t_member ORDER BY joinDate DESC
+      ]]>
+   </select>
+   
+   <!-- 아이디에 해당하는 회원 정보 가져오기 (7.7) -->
+   <select id = "selectMember" parameterType="String" resultType="com.edu.member.vo.MemberVO">
+      <![CDATA[
+      SELECT * FROM t_member WHERE id = #{id}
+      ]]> <!-- 아이디에 해당하는 회원 정보 셀렉 -->
+   </select>
+   
+   <!-- 아이디에 해당하는 회원 정보 수정하기 (7.7) -->
+   <update id="updateMember" parameterType="com.edu.member.vo.MemberVO">
+      <![CDATA[
+      UPDATE t_member 
+      SET pwd = #{pwd}, name = #{name}, email = #{email} 
+      WHERE id = #{id}
+      ]]>
+   </update>
+   
+   <!-- 아이디에 해당하는 회원 정보 삭제하기 (7.7) -->
+   <delete id="deleteMember" parameterType="String">
+		<![CDATA[
+		DELETE	FROM t_member
+		WHERE	id = #{id}
+		]]>
+   </delete>
+   
+   <!-- 로그인 처리 (7.7-8) WHERE ID=#{id} AND PWD=#{pwd}-->
+   <select id="loginByID" parameterType="com.edu.member.vo.MemberVO" resultType="com.edu.member.vo.MemberVO">
+      <![CDATA[
+       SELECT *
+       FROM t_member
+       WHERE ID=#{id}
+      ]]>
+   </select>
+   
+   <!-- 입력한 아이디가 존재하는지 알아낸다. (7.11) -->
+   <select id="idCheck" parameterType="com.edu.member.vo.MemberVO" resultType="int">
+      <![CDATA[
+       SELECT COUNT(*)
+       FROM t_member
+       WHERE id = #{id}
+      ]]>
+   </select>
+
+</mapper>

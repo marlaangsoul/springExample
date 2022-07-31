@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+      PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.edu.board">
+
+	<!-- 게시글 전체 목록 추출하기 -->
+	<select id="listAll" resultType="com.edu.board.dto.BoardDTO">
+		<![CDATA[
+		SELECT	seq, subject, content, name, reg_date, readCount
+		FROM	board
+		]]>
+	</select>
+
+	<!-- 제일 큰 게시글 번호 추출하기 -->
+	<select id="maxSeq" resultType="java.lang.Integer">
+		<![CDATA[
+		SELECT	MAX(seq)
+		FROM	board
+		]]>
+	</select>
+	
+	<!-- 게시글 등록하기 -->
+	<insert id="register" parameterType="com.edu.board.dto.BoardDTO">
+		<![CDATA[
+		INSERT INTO board
+				(seq,		subject,	content,	name,		reg_date,		readcount)
+		VALUES	(#{seq},	#{subject},	#{content},	#{name},	#{reg_date},	0)
+		]]>
+	</insert>
+	
+	
+	<!-- 게시글 번호에 해당하는 게시글의 조회수 증가시키기 -->
+	<update id="updateReadCount" parameterType="int">
+		<![CDATA[
+		UPDATE board
+		SET readcount = readcount + 1
+		WHERE seq = #{seq}
+		]]>
+	</update>
+	
+	<!-- 게시글 번호에 해당하는 게시글 정보 추출하기(7.15) -->
+	<select id="detail" parameterType="int" resultType="com.edu.board.dto.BoardDTO">	
+		<![CDATA[
+		SELECT seq, subject, content, name, reg_date, readcount
+		FROM board
+		WHERE seq = #{seq}
+		]]>	
+	</select>
+	
+	<!-- 게시글 번호에 해당하는 게시글 삭제하기(7.15) -->
+	<delete id="delete" parameterType="int">
+		<![CDATA[
+		DELETE FROM board
+		WHERE seq = #{seq}
+		]]>
+	</delete>
+	
+	<!-- 게시글 번호에 해당하는 게시글 정보(제목, 글쓴이, 내용)를 수정하기 -->
+	<update id="update" parameterType="com.edu.board.dto.BoardDTO">
+		<![CDATA[
+		UPDATE	board
+		SET		subject = #{subject}, name = #{name}, content = #{content}
+		WHERE	seq = #{seq}
+		]]>
+	</update>
+	
+</mapper>
+
